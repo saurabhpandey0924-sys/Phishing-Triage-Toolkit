@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saurabh — Phishing Awareness Analysis</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0b1728;
+      --panel: rgba(13, 27, 47, 0.9);
+      --panel-2: rgba(9, 20, 36, 0.95);
+      --line: rgba(109, 155, 255, 0.18);
+      --text: #eaf2ff;
+      --muted: #9fb2d3;
+      --primary: #4ea1ff;
+      --primary-2: #6ef2ff;
+      --danger: #ff5c7a;
+      --warning: #ffc857;
+      --success: #1ed760;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --blur: blur(12px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top right, rgba(78,161,255,0.18), transparent 22%),
+        radial-gradient(circle at bottom left, rgba(110,242,255,0.12), transparent 18%),
+        linear-gradient(180deg, #050c17 0%, #07111f 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: 0 auto;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: var(--blur);
+      background: rgba(5, 12, 23, 0.65);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: 1.1rem;
+    }
+
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(78,161,255,0.2), rgba(110,242,255,0.12));
+      border: 1px solid rgba(110,242,255,0.2);
+      box-shadow: var(--shadow);
+      font-size: 1.3rem;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.25s ease;
+      padding: 10px 14px;
+      border-radius: 12px;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 70px 0 30px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .panel {
+      background: linear-gradient(180deg, rgba(13, 27, 47, 0.9), rgba(8, 19, 34, 0.96));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before,
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(78,161,255,0.08), transparent 40%, rgba(110,242,255,0.06));
+      pointer-events: none;
+    }
+
+    .hero-content {
+      padding: 38px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #b8dcff;
+      background: rgba(78,161,255,0.12);
+      border: 1px solid rgba(78,161,255,0.18);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero h1 span {
+  background: linear-gradient(90deg, #7dc2ff, #72f7ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+    }
+
+    .hero p {
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 1rem;
+      max-width: 800px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      color: #05111d;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2));
+      box-shadow: 0 10px 30px rgba(78,161,255,0.28);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(78,161,255,0.34);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 24px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-card p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    /* SECTION */
+    section {
+      padding: 34px 0;
+    }
+
+    .section-title {
+      margin-bottom: 22px;
+    }
+
+    .section-title h2 {
+      font-size: 1.7rem;
+      margin-bottom: 8px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ANALYZER */
+    .analyzer-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel-body {
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title h3 {
+      font-size: 1.2rem;
+    }
+
+    .panel-title span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: #d7e6ff;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 14px 16px;
+      outline: none;
+      transition: 0.2s ease;
+      font-size: 0.96rem;
+    }
+
+    .field textarea {
+      min-height: 180px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: rgba(78,161,255,0.5);
+      box-shadow: 0 0 0 4px rgba(78,161,255,0.08);
+    }
+
+    .field-hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .analyze-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    /* RESULT PANEL */
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .verdict-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+    }
+
+    .safe {
+      color: #c7ffd9;
+      background: rgba(30,215,96,0.12);
+      border-color: rgba(30,215,96,0.22);
+    }
+
+    .suspicious {
+      color: #ffe7a8;
+      background: rgba(255,200,87,0.12);
+      border-color: rgba(255,200,87,0.22);
+    }
+
+    .malicious {
+      color: #ffd1da;
+      background: rgba(255,92,122,0.12);
+      border-color: rgba(255,92,122,0.22);
+    }
+
+    .score-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .score-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .score-top h4 {
+      font-size: 1rem;
+    }
+
+    .score-top strong {
+      font-size: 1.3rem;
+    }
+
+    .progress {
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      transition: width 0.5s ease;
+      background: linear-gradient(90deg, #1ed760, #ffc857, #ff5c7a);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .result-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .result-box h4 {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .result-box p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .flags-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .flag-item {
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.025);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .flag-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #eaf4ff;
+    }
+
+    .flag-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* SAMPLE */
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .sample-card {
+      background: linear-gradient(180deg, rgba(13, 27, 47, 0.9), rgba(8, 19, 34, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .sample-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(110,242,255,0.24);
+    }
+
+    .sample-card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .sample-card p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.92rem;
+      margin-bottom: 14px;
+    }
+
+    .sample-tag {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(78,161,255,0.12);
+      color: #b9ddff;
+      border: 1px solid rgba(78,161,255,0.18);
+    }
+
+    /* RULES */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .rule-card {
+      background: linear-gradient(180deg, rgba(13, 27, 47, 0.9), rgba(8, 19, 34, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      min-height: 200px;
+    }
+
+    .rule-card h3 {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .rule-card p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.93rem;
+      margin-bottom: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: #d6e7ff;
+      font-size: 0.78rem;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 36px 0 50px;
+      color: var(--muted);
+    }
+
+    .footer-box {
+      background: linear-gradient(180deg, rgba(13, 27, 47, 0.85), rgba(8, 19, 34, 0.95));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .footer-box h3 {
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .footer-box p {
+      line-height: 1.8;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.025);
+      border: 1px dashed rgba(255,255,255,0.08);
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .analyzer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sample-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .rules-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .sample-grid,
+      .rules-grid,
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content,
+      .panel-body {
+        padding: 20px;
+      }
+
+      .hero {
+        padding-top: 40px;
+      }
+
+      .hero-actions,
+      .analyze-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-badge">🛡️</div>
+        <div>
+          <small>Cybersecurity Email Triage Toolkit • 2026</small>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#analyzer">Analyzer</a>
+        <a href="#samples">Samples</a>
+        <a href="#rules">Red Flags</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div class="hero-card">
+        <div class="hero-content">
+          <div class="eyebrow">⚡ Saurabh Security • Email Phishing Detection Suite</div>
+          <h1>
+            Detect <span>Phishing Emails</span> with
+            Smart Red-Flag Analysis
+          </h1>
+          <p>
+            This advanced phishing awareness web tool analyzes suspicious emails using
+            <strong>11 phishing red flags</strong>, suspicious domain patterns, urgency/fear triggers,
+            dangerous attachment indicators, and executive fraud signals. Paste an email below,
+            run the analysis engine, and get a verdict with risk score, evidence, and recommended action.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#analyzer" class="btn btn-primary">Analyze an Email</a>
+            <a href="#samples" class="btn btn-secondary">Try Sample Attacks</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-stats">
+          <div class="stat-card">
+            <h3>11</h3>
+            <p>Phishing red flag categories mapped into the analysis engine.</p>
+          </div>
+          <div class="stat-card">
+            <h3>3</h3>
+            <p>Verdict classes: Safe, Suspicious, and Malicious.</p>
+          </div>
+          <div class="stat-card">
+            <h3>Live</h3>
+            <p>Instant email triage report with matched indicators and action guidance.</p>
+          </div>
+          <div class="stat-card">
+            <h3>UI</h3>
+            <p>Modern cybersecurity dashboard design for project submission and portfolio use.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYZER -->
+  <section id="analyzer">
+    <div class="container">
+      <div class="section-title">
+        <h2>Email Phishing Analyzer</h2>
+        <p>
+          Enter the sender, subject, and email body. The toolkit will scan the message against phishing indicators,
+          suspicious sender patterns, urgency signals, credential theft prompts, and other red flags.
+        </p>
+      </div>
+
+      <div class="analyzer-grid">
+        <!-- LEFT: FORM -->
+        <div class="panel">
+          <div class="panel-body">
+            <div class="panel-title">
+              <h3>Analyze an Email</h3>
+              <span>Manual input / lab simulation</span>
+            </div>
+
+            <div class="field">
+              <label for="sender">Sender (From)</label>
+              <input
+                id="sender"
+                type="text"
+                placeholder='e.g. Microsoft Support <support@logins-updates.com>'
+              />
+            </div>
+
+            <div class="field">
+              <label for="subject">Subject</label>
+              <input
+                id="subject"
+                type="text"
+                placeholder="e.g. FW: Urgent: Your Account Security Alert"
+              />
+            </div>
+
+            <div class="field">
+              <label for="body">Email Body</label>
+              <textarea
+                id="body"
+                placeholder="Paste the full email body here..."
+              ></textarea>
+              <div class="field-hint">
+                Tip: Include suspicious words like “verify your account”, “urgent”, “wire transfer”, “OTP”, or
+                attachment names such as <code>.iso</code>, <code>.exe</code>, <code>.js</code> if present.
+              </div>
+            </div>
+
+            <div class="analyze-actions">
+              <button class="btn btn-primary" onclick="runAnalysis()">Run Analysis</button>
+              <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: RESULT -->
+        <div class="panel">
+          <div class="panel-body">
+            <div class="panel-title">
+              <h3>Triage Report</h3>
+              <span>Generated instantly from the phishing engine</span>
+            </div>
+
+            <div id="resultArea">
+              <div class="empty-state">
+                No report generated yet. Enter an email and click
+                <strong>Run Analysis</strong>, or use one of the sample phishing scenarios below.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAMPLE EMAILS -->
+  <section id="samples">
+    <div class="container">
+      <div class="section-title">
+        <h2>Sample Phishing Scenarios</h2>
+        <p>
+          These samples are based on common phishing attack patterns such as CEO fraud,
+          fake Microsoft alerts, callback scams, and legitimate internal email traffic.
+          Click any sample to auto-fill the analyzer.
+        </p>
+      </div>
+
+      <div class="sample-grid" id="sampleGrid"></div>
+    </div>
+  </section>
+
+  <!-- RED FLAGS -->
+  <section id="rules">
+    <div class="container">
+      <div class="section-title">
+        <h2>Phishing Detection Rules — All 11 Red Flags</h2>
+        <p>
+          The toolkit checks each email against the following phishing categories. Each rule includes
+          example trigger keywords and suspicious patterns.
+        </p>
+      </div>
+
+      <div class="rules-grid" id="rulesGrid"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-box">
+        <h3>Saurabh — Phishing Awareness Analysis Toolkit</h3>
+        <p>
+          Built as a cybersecurity project website to demonstrate phishing triage, red-flag detection,
+          suspicious domain recognition, and analyst-friendly reporting in a professional dashboard UI.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================================
+    // DATA: RED FLAGS & SUSPICIOUS DOMAIN PATTERNS
+    // ============================================================
+    const RED_FLAG_KEYWORDS = {
+      "RF1 - Sender/Domain Mismatch": [
+        "gmail.com", "yahoo.com", "hotmail.com", "outlook.com",
+        "logins-updates", "login-update", "secure-login", "account-alert"
+      ],
+      "RF2 - Fake Forwarded Chains": [
+        "fw:", "fwd:", "forwarded message"
+      ],
+      "RF4 - Dangerous Attachments": [
+        ".iso", ".js", ".scr", ".exe", ".bat", ".vbs"
+      ],
+      "RF5 - Urgent Bypass Requests": [
+        "do not discuss", "strictly confidential", "bypass procedure",
+        "bypass standard", "do not tell", "keep this secret"
+      ],
+      "RF6 - Request for Sensitive Info": [
+        "mfa code", "otp", "password", "update billing",
+        "confirm your details", "verify your account",
+        "enter your credentials", "payment detail"
+      ],
+      "RF7 - Activity / Sign-in Alerts": [
+        "unusual sign-in", "account locked", "suspicious activity",
+        "security alert", "login attempt", "verify now"
+      ],
+      "RF8 - MFA Fatigue": [
+        "approve sign-in", "mfa request", "authentication request",
+        "confirm login", "approve this request"
+      ],
+      "RF9 - Security Callback Scam (TOAD)": [
+        "call 1-800", "call us immediately", "call this number",
+        "subscription charge", "call to cancel"
+      ],
+      "RF10 - QR Code Prompts": [
+        "scan the qr", "scan to unlock", "scan to verify",
+        "qr code", "scan this code"
+      ],
+      "RF11 - Deepfake / Executive Fraud": [
+        "wire transfer", "transfer funds", "lost my wallet",
+        "urgent wire", "immediate transfer", "ceo", "director"
+      ],
+      "RF3 - Urgency / Fear Trigger (Psychology)": [
+        "urgent", "immediately", "account will be closed",
+        "expires in 24", "act now", "last warning",
+        "immediate action required", "your account has been"
+      ],
+    };
+
+    const SUSPICIOUS_DOMAIN_PATTERNS = [
+      "amaz0n", "paypa1", "g00gle", "micosoft", "arnazon",
+      "secure-login", "login-update", "account-verify",
+      "support-desk", "helpdesk-", "-secure", "logins-"
+    ];
+
+    // Optional weighted severity for a more professional report
+    const FLAG_WEIGHTS = {
+      "RF1 - Sender/Domain Mismatch": 18,
+      "RF2 - Fake Forwarded Chains": 8,
+      "RF3 - Urgency / Fear Trigger (Psychology)": 12,
+      "RF4 - Dangerous Attachments": 22,
+      "RF5 - Urgent Bypass Requests": 20,
+      "RF6 - Request for Sensitive Info": 20,
+      "RF7 - Activity / Sign-in Alerts": 14,
+      "RF8 - MFA Fatigue": 16,
+      "RF9 - Security Callback Scam (TOAD)": 18,
+      "RF10 - QR Code Prompts": 15,
+      "RF11 - Deepfake / Executive Fraud": 24,
+      "RF1 - Suspicious Domain Pattern": 18
+    };
+
+    // ============================================================
+    // SAMPLE EMAILS
+    // ============================================================
+    const SAMPLE_EMAILS = [
+      {
+        label: "Sample 1 — BEC: CEO Wire Transfer",
+        tag: "Executive Fraud",
+        sender: "CEO Name <hacker@gmail.com>",
+        subject: "Urgent Wire Transfer Request",
+        body:
+          "I lost my wallet at the airport. Need you to wire transfer funds for my flight immediately. Do not discuss with anyone. Bypass standard procedure. This is strictly confidential. - CEO"
+      },
+      {
+        label: "Sample 2 — Microsoft Phishing",
+        tag: "Credential Theft",
+        sender: "Microsoft Support <support@logins-updates.com>",
+        subject: "FW: Urgent: Your Account Security Alert",
+        body:
+          "Your account will be closed. Immediate action required. Please verify your account and enter your credentials. Download attachment: Security_Update_2024.iso"
+      },
+      {
+        label: "Sample 3 — Legitimate Email",
+        tag: "Safe Example",
+        sender: "Project Manager <sarah.lee@company.com>",
+        subject: "Q3 Project Status Update - Non-Urgent",
+        body:
+          "Hi Team, Please review the attached project status for Q3 at your earliest convenience. No immediate action is required. Thanks, Sarah."
+      },
+      {
+        label: "Sample 4 — TOAD Callback Scam",
+        tag: "Phone Scam",
+        sender: "Microsoft Billing <noreply@microsofft-renewal.com>",
+        subject: "PAYMENT OVERDUE: Microsoft Subscription Renewal",
+        body:
+          "Your subscription is overdue. Call 1-800-XXX-XXXX to cancel IMMEDIATELY. Subscription charge of $190.60 pending."
+      }
+    ];
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function normalizeText(...parts) {
+      return parts.join(" ").toLowerCase();
+    }
+
+    function getSeverity(weight) {
+      if (weight >= 22) return "Critical";
+      if (weight >= 18) return "High";
+      if (weight >= 12) return "Medium";
+      return "Low";
+    }
+
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ============================================================
+    // CORE ANALYSIS ENGINE
+    // ============================================================
+    function analyzeEmail(sender, subject, body) {
+      const foundFlags = [];
+      const senderLower = sender.toLowerCase();
+      const subjectLower = subject.toLowerCase();
+      const bodyLower = body.toLowerCase();
+      const fullText = normalizeText(sender, subject, body);
+
+      // Scan all defined red flags
+      for (const [flagName, keywords] of Object.entries(RED_FLAG_KEYWORDS)) {
+        for (const keyword of keywords) {
+          if (fullText.includes(keyword.toLowerCase())) {
+            let location = "body";
+            if (senderLower.includes(keyword.toLowerCase())) location = "sender";
+            else if (subjectLower.includes(keyword.toLowerCase())) location = "subject";
+
+            const weight = FLAG_WEIGHTS[flagName] || 10;
+            foundFlags.push({
+              name: flagName,
+              keyword,
+              severity: getSeverity(weight),
+              weight,
+              location,
+              reason: buildReason(flagName, keyword)
+            });
+            break; // one hit per category
+          }
+        }
+      }
+
+      // Suspicious sender domain patterns
+      for (const pattern of SUSPICIOUS_DOMAIN_PATTERNS) {
+        if (senderLower.includes(pattern.toLowerCase())) {
+          const flagName = "RF1 - Suspicious Domain Pattern";
+          const weight = FLAG_WEIGHTS[flagName] || 18;
+          foundFlags.push({
+            name: flagName,
+            keyword: pattern,
+            severity: getSeverity(weight),
+            weight,
+            location: "sender",
+            reason: "The sender domain appears to use typosquatting, fake brand naming, or deceptive login-style wording."
+          });
+          break;
+        }
+      }
+
+      // Total score
+      let score = foundFlags.reduce((sum, f) => sum + f.weight, 0);
+      if (score > 100) score = 100;
+
+      // Verdict logic
+      let verdict = "";
+      let verdictClass = "";
+      let action = "";
+      let reason = "";
+
+      if (score === 0) {
+        verdict = "SAFE";
+        verdictClass = "safe";
+        action = "Close / no immediate phishing indicators detected.";
+        reason = "No phishing indicators were matched against the current email content.";
+      } else if (score <= 34) {
+        verdict = "SUSPICIOUS";
+        verdictClass = "suspicious";
+        action = "Warn user, verify sender through an alternate trusted channel, and avoid clicking links until verified.";
+        reason = "A small number of phishing indicators were detected. The email requires manual verification before any action.";
+      } else if (score <= 64) {
+        verdict = "SUSPICIOUS";
+        verdictClass = "suspicious";
+        action = "Treat as a probable phishing attempt. Do not open attachments or submit credentials until security review.";
+        reason = "Multiple phishing indicators were detected, suggesting elevated risk and a need for investigation.";
+      } else {
+        verdict = "MALICIOUS";
+        verdictClass = "malicious";
+        action = "Block / quarantine the message, do not click links or attachments, and escalate to the security team immediately.";
+        reason = "The email contains multiple high-risk phishing indicators consistent with credential theft, fraud, or malware delivery.";
+      }
+
+      return {
+        verdict,
+        verdictClass,
+        score,
+        action,
+        reason,
+        flags: foundFlags
+      };
+    }
+
+    function buildReason(flagName, keyword) {
+      const reasons = {
+        "RF1 - Sender/Domain Mismatch":
+          `The sender uses a potentially untrusted or mismatched domain pattern. Matched keyword: "${keyword}".`,
+        "RF2 - Fake Forwarded Chains":
+          `The message mimics a forwarded chain to appear legitimate or urgent. Matched keyword: "${keyword}".`,
+        "RF3 - Urgency / Fear Trigger (Psychology)":
+          `The email uses urgency or fear language to pressure the user into acting quickly. Matched keyword: "${keyword}".`,
+        "RF4 - Dangerous Attachments":
+          `The message references a dangerous or executable attachment type that may deliver malware. Matched keyword: "${keyword}".`,
+        "RF5 - Urgent Bypass Requests":
+          `The sender attempts to bypass standard procedure or secrecy controls. Matched keyword: "${keyword}".`,
+        "RF6 - Request for Sensitive Info":
+          `The message requests credentials, billing information, or other sensitive data. Matched keyword: "${keyword}".`,
+        "RF7 - Activity / Sign-in Alerts":
+          `The email claims account compromise or suspicious sign-in activity to trigger panic. Matched keyword: "${keyword}".`,
+        "RF8 - MFA Fatigue":
+          `The message attempts to socially engineer MFA approval or login confirmation. Matched keyword: "${keyword}".`,
+        "RF9 - Security Callback Scam (TOAD)":
+          `The email pressures the recipient to call a number, a common callback phishing / TOAD technique. Matched keyword: "${keyword}".`,
+        "RF10 - QR Code Prompts":
+          `The message attempts to redirect the user through a QR code workflow, which can hide malicious destinations. Matched keyword: "${keyword}".`,
+        "RF11 - Deepfake / Executive Fraud":
+          `The email resembles executive impersonation, wire transfer fraud, or urgent financial manipulation. Matched keyword: "${keyword}".`,
+      };
+
+      return reasons[flagName] || `Matched suspicious phishing indicator: "${keyword}".`;
+    }
+
+    // ============================================================
+    // UI RENDERING
+    // ============================================================
+    function renderResult(report) {
+      const resultArea = document.getElementById("resultArea");
+      const { verdict, verdictClass, score, action, reason, flags } = report;
+
+      let flagsHTML = "";
+      if (flags.length === 0) {
+        flagsHTML = `
+          <div class="empty-state">
+            No red flags were detected in the submitted email content.
+          </div>
+        `;
+      } else {
+        flagsHTML = `
+          <div class="flags-list">
+            ${flags.map(flag => `
+              <div class="flag-item">
+                <strong>${escapeHTML(flag.name)}</strong>
+                <div class="flag-meta">
+                  <div><strong>Matched Keyword:</strong> ${escapeHTML(flag.keyword)}</div>
+                  <div><strong>Found In:</strong> ${escapeHTML(flag.location)}</div>
+                  <div><strong>Severity:</strong> ${escapeHTML(flag.severity)} • <strong>Weight:</strong> ${flag.weight}</div>
+                  <div><strong>Why it matters:</strong> ${escapeHTML(flag.reason)}</div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      resultArea.innerHTML = `
+        <div class="result-header">
+          <div class="verdict-badge ${verdictClass}">
+            ${verdict === "SAFE" ? "✅" : verdict === "SUSPICIOUS" ? "⚠️" : "🔴"}
+            ${verdict}
+          </div>
+          <div style="color: var(--muted); font-size: 0.95rem;">
+            Automated phishing triage completed
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-top">
+            <h4>Risk Score</h4>
+            <strong>${score}/100</strong>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: ${score}%"></div>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-box">
+            <h4>Verdict Summary</h4>
+            <p>${escapeHTML(reason)}</p>
+          </div>
+
+          <div class="result-box">
+            <h4>Recommended Action</h4>
+            <p>${escapeHTML(action)}</p>
+          </div>
+
+          <div class="result-box">
+            <h4>Matched Red Flags (${flags.length})</h4>
+            ${flagsHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    function runAnalysis() {
+      const sender = document.getElementById("sender").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const body = document.getElementById("body").value.trim();
+
+      if (!sender && !subject && !body) {
+        alert("Please enter at least sender, subject, or body before running the analysis.");
+        return;
+      }
+
+      const report = analyzeEmail(sender, subject, body);
+      renderResult(report);
+
+      // Smooth scroll to result panel on smaller screens
+      document.getElementById("resultArea").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function clearForm() {
+      document.getElementById("sender").value = "";
+      document.getElementById("subject").value = "";
+      document.getElementById("body").value = "";
+      document.getElementById("resultArea").innerHTML = `
+        <div class="empty-state">
+          No report generated yet. Enter an email and click
+          <strong>Run Analysis</strong>, or use one of the sample phishing scenarios below.
+        </div>
+      `;
+    }
+
+    function loadSample(index) {
+      const sample = SAMPLE_EMAILS[index];
+      document.getElementById("sender").value = sample.sender;
+      document.getElementById("subject").value = sample.subject;
+      document.getElementById("body").value = sample.body;
+      window.location.hash = "#analyzer";
+      setTimeout(() => runAnalysis(), 120);
+    }
+
+    function renderSamples() {
+      const sampleGrid = document.getElementById("sampleGrid");
+      sampleGrid.innerHTML = SAMPLE_EMAILS.map((sample, index) => `
+        <div class="sample-card" onclick="loadSample(${index})">
+          <h3>${escapeHTML(sample.label)}</h3>
+          <p>${escapeHTML(sample.body.slice(0, 120))}...</p>
+          <span class="sample-tag">${escapeHTML(sample.tag)}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderRules() {
+      const rulesGrid = document.getElementById("rulesGrid");
+      rulesGrid.innerHTML = Object.entries(RED_FLAG_KEYWORDS).map(([rule, keywords]) => `
+        <div class="rule-card">
+          <h3>${escapeHTML(rule)}</h3>
+          <p>
+            This rule detects suspicious language or patterns associated with
+            phishing, impersonation, credential theft, or social engineering.
+          </p>
+          <div class="chips">
+            ${keywords.slice(0, 6).map(k => `<span class="chip">${escapeHTML(k)}</span>`).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Init
+    renderSamples();
+    renderRules();
+  </script>
+</body>
+</html>
